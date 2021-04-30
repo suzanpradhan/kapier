@@ -16,14 +16,21 @@ def connection():
     cursor = db.cursor()
 
     sql = " select * from db1 "
-    sql1= " select * from db2 "
+    sql1= "INSERT INTO db2 (id,username) VALUES (%s,%s)"
+    sql2="select * from db2"
+
 
     try:
         cursor.execute(sql)
         for row in cursor:
             db1.append(row)
+        
+        for row in db1:
+            val=(row[0],row[1])
+            cursor.execute(sql1,val)
+            db.commit()
             
-        cursor.execute(sql1)
+        cursor.execute(sql2)
         for row in cursor:
             db2.append(row)
 
@@ -41,12 +48,12 @@ def connection():
 
 connection()
 
-print(db1)
-print(db2)
+# print(db1)
+# print(db2)
 db3=[]
 for i in range(len(db1)):
     db3.append([db1[i][1],db2[i][1]])
-print(db3)
+# print(db3)
 
 df1 = pd.DataFrame(db3,columns=['name','user'])
 df1.to_excel("output.xlsx")
